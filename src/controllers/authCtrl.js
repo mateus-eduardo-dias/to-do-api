@@ -16,7 +16,6 @@ export default {
                 console.log(err)
                 next({'status': 'error', 'r': {'id': 'TokenGenerationError'}, 'code': 500})
             })
-            
         }
     },
     async login(req, res, next){
@@ -24,10 +23,10 @@ export default {
         if (status.info != 'UserFound'){
             next({'status': 'error', 'r': {'id': status.info}, 'code':status.code})
         } else {
-            if (authUtil.verifyPassword(req.body.password, status.search.password)){
-                authUtil.genAuthToken(status.search.id, status.search.username)
+            if (await authUtil.verifyHash(req.body.password, status.search[0].password)){
+                authUtil.genAuthToken(status.search[0].id, status.search[0].username)
                 .then((val) => {
-                    next({'status': 'success', 'r': {'token': val}, 'code': 201})
+                    next({'status': 'success', 'r': {'token': val}, 'code': 200})
                 })
                 .catch((err) => {
                     console.log(err)
